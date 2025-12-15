@@ -12,7 +12,15 @@ function App() {
   const [error, setError] = useState(null);
 
   // backend api
-  const API_URL = process.env.REACT_APP_API_URL
+  const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1');
+
+  // Prefer build-time env; fall back to local vs deployed URL
+  const API_URL =
+    process.env.REACT_APP_API_URL ||
+    (isLocalhost ? 'http://localhost:5000' : 'http://4.145.123.52:5000');
 
   const handleImageSelect = (file) => {
     setSelectedImage(file);

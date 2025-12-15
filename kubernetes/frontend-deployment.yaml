@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: amddetectionacr.azurecr.io/amd-frontend:latest
-        imagePullPolicy: IfNotPresent
+        image: amddetectionacr.azurecr.io/amd-frontend:v2
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:
