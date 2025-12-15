@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: amd-backend-service
+  labels:
+    app: amd-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: amd-backend
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
