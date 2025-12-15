@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import sys
 from werkzeug.utils import secure_filename
 from utils.preprocessing import preprocess_image
 from utils.prediction import load_model, predict
@@ -10,6 +11,15 @@ app = Flask(__name__)
 
 # cors for frontend
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+# enable debug logging
+import logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stdout
+)
+logger = logging.getLogger(__name__)
 
 # config
 UPLOAD_FOLDER = 'uploads'
@@ -39,37 +49,53 @@ def health_check():
 @app.route('/api/predict', methods=['POST'])
 def predict_image():
     """Main prediction endpoint"""
+    logger.info("=== PREDICTION REQUEST RECEIVED ===")
+    logger.info(f"Request method: {request.method}")
+    logger.info(f"Request headers: {dict(request.headers)}")
+    logger.info(f"Request files: {request.files}")
+    
     # check if image file is in request
     if 'image' not in request.files:
+        logger.error("No image file in request")
         return jsonify({'error': 'No image file provided'}), 400
     
     file = request.files['image']
+    logger.info(f"File received: {file.filename}")
     
     # check if file is selected
     if file.filename == '':
+        logger.error("Empty filename")
         return jsonify({'error': 'No file selected'}), 400
     
     # validates file type
     if not allowed_file(file.filename):
+        logger.error(f"Invalid file type: {file.filename}")
         return jsonify({'error': 'Invalid file type. Allowed: png, jpg, jpeg'}), 400
     
     try:
+        logger.info("Starting prediction process...")
         # save the uploaded file temporarilly
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        logger.info(f"Saving file to: {filepath}")
         file.save(filepath)
         
         # preprocess and get prediction for the image
+        logger.info("Preprocessing image...")
         processed_image = preprocess_image(filepath)
+        logger.info("Running model prediction...")
         result = predict(model, processed_image)
+        logger.info(f"Prediction result: {result}")
         
         # clean up uploaded file
         os.remove(filepath)
+        logger.info("File cleaned up successfully")
         
         # return prediction
         return jsonify(result), 200
         
     except Exception as e:
+        logger.error(f"PREDICTION ERROR: {str(e)}", exc_info=True)
         # clean up file if it exists
         if os.path.exists(filepath):
             os.remove(filepath)

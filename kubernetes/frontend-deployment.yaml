@@ -22,7 +22,7 @@ spec:
         - containerPort: 80
         env:
         - name: REACT_APP_API_URL
-          value: "http://amd-backend-service:5000"
+          value: "http://4.145.123.52:5000"
         resources:
           requests:
             memory: "128Mi"

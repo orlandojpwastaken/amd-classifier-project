@@ -5,7 +5,7 @@ metadata:
   labels:
     app: amd-backend
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: amd-backend
   ports:
