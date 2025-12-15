@@ -5,7 +5,7 @@ metadata:
   labels:
     app: amd-backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: amd-backend
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: amd-backend:latest
+        image: amddetectionacr.azurecr.io/amd-backend:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

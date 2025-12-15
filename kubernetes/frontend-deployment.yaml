@@ -5,7 +5,7 @@ metadata:
   labels:
     app: amd-frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: amd-frontend
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: amd-frontend:latest
+        image: amddetectionacr.azurecr.io/amd-frontend:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
